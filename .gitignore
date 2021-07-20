@@ -1,1 +1,6 @@
 __pycache__
+*.jpg
+*.png
+test_set/
+training/
+saved_ckpt/
