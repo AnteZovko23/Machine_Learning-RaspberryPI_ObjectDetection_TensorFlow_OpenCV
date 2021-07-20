@@ -38,7 +38,7 @@ elif not pathlib.Path('models').exists():
 
 if not pathlib.Path('data').exists():
     os.system('mkdir data')
-    os.system('cd data && curl -L "https://app.roboflow.com/ds/GblVOKcvEx?key=8B1ds3XwEB" > roboflow.zip; unzip roboflow.zip; rm roboflow.zip')
+    os.system('cd data && curl -L "<link>" > roboflow.zip; unzip roboflow.zip; rm roboflow.zip')
 
 test_record_fname = 'data/test/Lights.tfrecord'
 train_record_fname = 'data/train/Lights.tfrecord'
