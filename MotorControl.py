@@ -6,11 +6,14 @@ import threading
 import pyautogui
 
 
-# from getkey import getkey, keys
+###############################
+# Name: Ante Zovko
+# Version: July 20, 2021
+# Description: DC Motor Control for an RC Car using the Raspberry PI 4
+######################################################
 
 
-
-
+## Pins used
 SERVO_IN = 29
 
 ECHO = 31
@@ -96,12 +99,15 @@ PWM_TURN.start(cycle_TURN)
 PWM_CAM.start(cycle_CAM)
 PWM_SERVO.start(cycle_SERVO)
 
+## Check if car is moving forward
 movingForward = False
 
 print('\n')
 print("Starting low and forward...")
 print('\n')
 
+
+## Gets the distance using an HC-SR04 Ultrasonic sensor
 def getDistance():
    
     start = 0
@@ -123,6 +129,7 @@ def getDistance():
     distance = 17150 * ElapsedTime
     time.sleep(0.2)
     return distance
+
 
 def onPress(key):
     
@@ -262,58 +269,7 @@ def detectionThread():
 
 
 threading.Thread(target=detectionThread, args=()).start()
-with Listener(on_press = onPress, on_release = onRelease) as listener:
-    #threading.Thread(target=p, args=()).start()
 
+with Listener(on_press = onPress, on_release = onRelease) as listener:
     ObjectDetection.detect()
     listener.join()
-
-    
-"""
-while(1):
-    key = getkey()
-
-    if key == keys.UP:
-        if cycle + 1 > 100:
-            cycle = 100
-        else:
-            cycle += 1
-        print(cycle)
-        PWM_FRONT.ChangeDutyCycle(cycle)
-        PWM_BACK.ChangeDutyCycle(cycle)
-    
-    elif key == keys.DOWN:
-        if cycle - 1 < 0:
-            cycle = 0
-        else:
-            cycle -= 1
-        print(cycle)
-        PWM_FRONT.ChangeDutyCycle(cycle)
-        PWM_BACK.ChangeDutyCycle(cycle)
-
-    elif key == 'f':
-        GPIO.output(IN1_FRONT, GPIO.HIGH)
-        GPIO.output(IN1_BACK, GPIO.LOW)
-
-        GPIO.output(IN2_FRONT, GPIO.LOW)
-        GPIO.output(IN2_BACK, GPIO.HIGH)
-        
-    elif key == 'r':
-        GPIO.output(IN1_FRONT, GPIO.LOW)
-        GPIO.output(IN1_BACK, GPIO.HIGH)
-
-        GPIO.output(IN2_FRONT, GPIO.HIGH)
-        GPIO.output(IN2_BACK, GPIO.LOW)
-
-
-    elif key == 'b':
-        GPIO.output(IN2_FRONT, GPIO.LOW)
-        GPIO.output(IN1_FRONT, GPIO.LOW) 
-        GPIO.output(IN1_BACK, GPIO.LOW)
-        GPIO.output(IN2_BACK, GPIO.LOW)
-        break
-"""           
-
-
-
-        

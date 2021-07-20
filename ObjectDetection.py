@@ -8,6 +8,15 @@ import time
 from threading import Thread
 import importlib.util
 
+###############################
+# Name: Ante Zovko
+# Version: July 20, 2021
+# Description: Object Detection with a PI camera and Tensorflow Object Detection with OpenCV
+######################################################
+
+
+
+
 # Define VideoStream class to handle streaming of video from webcam in separate processing thread
 # Source - Adrian Rosebrock, PyImageSearch: https://www.pyimagesearch.com/2015/12/28/increasing-raspberry-pi-fps-with-python-and-opencv/
 class VideoStream:
