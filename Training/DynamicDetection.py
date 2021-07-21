@@ -9,6 +9,12 @@ from object_detection.utils import visualization_utils as viz_utils
 from object_detection.builders import model_builder
 from object_detection.utils import config_util
 
+###############################
+# Name: Ante Zovko
+# Version: July 20, 2021
+# Description: Loads a model for live feed detection
+######################################################
+
 
 # Load pipeline config and build a detection model
 configs = config_util.get_configs_from_pipeline_file('./pipeline_file.config')
