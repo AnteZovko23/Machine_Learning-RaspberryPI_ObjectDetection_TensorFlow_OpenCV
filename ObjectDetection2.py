@@ -86,10 +86,10 @@ def distance_finder(focal_length, real_width, detected_frame_width):
 
 
 
-def run_object_detection(min_conf_threshold, imW, imH, labels, interpreter, input_details, output_details, height, width, floating_model, input_mean, input_std, frame_rate_calc, frame1):
+def run_object_detection(min_conf_threshold, imW, imH, labels, interpreter, input_details, output_details, height, width, floating_model, input_mean, input_std, frame_rate_calc, frame1, focal_length = None):
     # Acquire frame and resize to expected shape [1xHxWx3]
     frame = frame1.copy()
-    # frame = cv2.rotate(frame, cv2.ROTATE_180)
+    frame = cv2.rotate(frame, cv2.ROTATE_180)
     frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     frame_resized = cv2.resize(frame_rgb, (width, height))
     input_data = np.expand_dims(frame_resized, axis=0)
@@ -109,7 +109,7 @@ def run_object_detection(min_conf_threshold, imW, imH, labels, interpreter, inpu
     classes = interpreter.get_tensor(output_details[1]['index'])[0] # Class index of detected objects
     scores = interpreter.get_tensor(output_details[2]['index'])[0] # Confidence of detected objects
         #num = interpreter.get_tensor(output_details[3]['index'])[0]  # Total number of detected objects (inaccurate and not needed)
-
+    distance = 0
         # Loop over all detections and draw detection box if confidence is above minimum threshold
     for i in range(len(scores)):
         if ((scores[i] > min_conf_threshold) and (scores[i] <= 1.0)):
@@ -122,13 +122,15 @@ def run_object_detection(min_conf_threshold, imW, imH, labels, interpreter, inpu
             xmax = int(min(imW,(boxes[i][3] * imW)))
 
             cv2.rectangle(frame, (xmin,ymin), (xmax,ymax), (10, 255, 0), 2)
-                
+            distance = 0
             width_in_frame = xmax - xmin
-            
+            if focal_length != None:
+                distance = distance_finder(focal_length, REAL_WIDTH, width_in_frame)
+                
 
-
-                # Draw label
+            # Draw label
             object_name = labels[int(classes[i])] # Look up object name from "labels" array using class index
+
             label = '%s: %d%%' % (object_name, int(scores[i]*100)) # Example: 'person: 72%'
             videostream.setLabel(label)
             labelSize, baseLine = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.7, 2) # Get font size
@@ -137,8 +139,8 @@ def run_object_detection(min_conf_threshold, imW, imH, labels, interpreter, inpu
             cv2.putText(frame, label, (xmin, label_ymin-7), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2) # Draw label text
 
         # Draw framerate in corner of frame
-    cv2.putText(frame,'FPS: {0:.2f}'.format(frame_rate_calc),(30,50),cv2.FONT_HERSHEY_SIMPLEX,1,(255,255,0),2,cv2.LINE_AA)
-        
+    cv2.putText(frame,'FPS: {0:.2f}'.format(frame_rate_calc),(30,50),cv2.FONT_HERSHEY_SIMPLEX,1,(0,0,0),2,cv2.LINE_AA)
+    cv2.putText(frame, 'Distance: {0:.1f} cm'.format(distance), (10,280), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2, cv2.LINE_AA)
         # All the results have been drawn on the frame, so it's time to display it.
     cv2.imshow('Object detector', frame)
 
@@ -260,7 +262,7 @@ def detect():
         # Grab frame from video stream
         frame1 = videostream.read()
 
-        detected_width = run_object_detection(min_conf_threshold, imW, imH, labels, interpreter, input_details, output_details, height, width, floating_model, input_mean, input_std, frame_rate_calc, frame1)
+        detected_width = run_object_detection(min_conf_threshold, imW, imH, labels, interpreter, input_details, output_details, height, width, floating_model, input_mean, input_std, frame_rate_calc, frame1, focal_length)
         
         if detected_width != 0:
             distance = distance_finder(focal_length, REAL_WIDTH, detected_width)
